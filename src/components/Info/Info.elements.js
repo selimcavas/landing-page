@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+
 export const InfoSec = styled.div`
 color: #fff;
 padding: 160px 0;
@@ -32,8 +33,28 @@ padding-bottom: 60px;
 color: #434C5E;
 text-align: center;
 
-
 @media screen and (max-width: 768px) {
     padding-bottom: 65px;
+}
+`;
+
+export const ImgWrap = styled.div`
+padding-bottom: 25px;
+display: flex;
+justify-content: center;
+`;
+
+export const Img = styled.img`
+border:0;
+max-width: 50%;
+max-height: 50%;
+vertical-align: middle;
+display: inline-block;
+padding-top: 0;
+
+
+@media screen and (max-width: 768px) {
+    max-width: 100%;
+    max-height: 100%;
 }
 `;

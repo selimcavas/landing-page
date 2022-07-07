@@ -35,3 +35,4 @@ align-items: center;
 export const NavIcon = styled(GoDeviceDesktop)`
 margin-right: 0.5rem;
 `
+
