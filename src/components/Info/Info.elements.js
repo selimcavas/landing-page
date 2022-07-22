@@ -40,6 +40,17 @@ text-align: center;
 }
 `;
 
+export const ErrorWrap = styled.div`
+padding-top: 0;
+padding-bottom: 60px;
+color: #BF616A;
+text-align: center;
+
+@media screen and (max-width: 768px) {
+    padding-bottom: 65px;
+}
+`;
+
 export const ImgWrap = styled.div`
 padding-top: 0;
 margin-top: -70px;

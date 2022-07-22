@@ -1,7 +1,10 @@
 import React, {useState} from 'react';
 import { Button, Container, StyledTextArea} from '../../globalStyles';
-import { InfoSec, InfoColumn, TextWrap, ImgWrap, Img} from './Info.elements';
+import { InfoSec, InfoColumn, TextWrap, ImgWrap, Img, ErrorWrap} from './Info.elements';
+import Modal from './Modal';
 import svg from '../../images/stars.svg';
+import axios from 'axios';
+
 
 const Info = () => {
 
@@ -12,22 +15,44 @@ const [state, setState] = useState({
   hidden: true,
 });
 
+const [isOpen, setOpen] = useState(false);
+
 const handleChange = (e) => {
-  if(e.target.value.length == 11 && (/^[0-9]+$/.test(e.target.value))){
+  if(e.target.value.length === 11 && (/^[0-9]+$/.test(e.target.value))){
     setState({value: e.target.value, hidden: true});
     console.log(e.target.value + ' is a valid phone number.');
-  }else{
+  } else {
     setState({value: 'Invalid phone number', hidden: false});
     console.log('Invalid phone number');
   }
 }
 
-const click = () => {
-  if((state.value == 'Invalid phone number' && state.hidden == false) || state.value == ''){
+const confirm = () => {
+  if((state.value === 'Invalid phone number' && state.hidden === false) || state.value === ''){
     setState({output: 'Hata: Geçerli bir telefon numarası girin!'});
   }
   else {
     setState({output: state.value, hidden: true});
+    //creating post request to the nodejs server
+    axios.post('http://localhost:3001/api', {
+      phone: state.value,
+    })
+    .then((response) => {
+      console.log(response.data);
+      console.log("🟠got status from landing api: "+response.data.status);
+      if(response.data.status === 1){
+        setState({output: 'Hata: Numaranız operatörde kayıtlı değil!', hidden: false});
+      }
+      else if(response.data.status === 3){
+        setState({output: 'Hata: Bu servise kayıt olmak için yeterli bakiyeniz yok!', hidden: false});
+      }
+      else if(response.data.status === 0){
+        setOpen(true); 
+      }
+
+    }, (error) => {
+      console.log(error);
+    });
   }
 }
 
@@ -46,14 +71,19 @@ const click = () => {
           </StyledTextArea>
         </InfoColumn>
         <InfoColumn> 
-          <Button onClick={() => click()}>
+          <Button onClick={() => confirm()}>
             Onayla
           </Button>
+          <Modal isOpen={isOpen} close = {() => {setOpen(false); window.location.reload(true)} }>
+            <TextWrap>
+              <h2>İşlem Başarılı!</h2>
+            </TextWrap>
+          </Modal>
         </InfoColumn>
         <InfoColumn>
-          <TextWrap>
+          <ErrorWrap>
             {state.hidden ? null : <p>{state.output}</p>}
-          </TextWrap>
+          </ErrorWrap>
         </InfoColumn>
         <InfoColumn>
             <TextWrap>
